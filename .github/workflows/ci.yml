@@ -1,0 +1,63 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  checks:
+    name: Syntax and repository checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify required files
+        run: |
+          test -f README.md
+          test -f LICENSE
+          test -f requirements.txt
+          test -f streamlit_app.py
+          test -f data/README.md
+
+      - name: Compile Python files
+        run: |
+          python -m compileall ransomwarewatch streamlit_app.py
+
+      - name: Check committed data/model artifacts
+        run: |
+          if git ls-files | grep -Ei '\.(csv|pkl|joblib|pt|pth|h5|onnx)$'; then
+            echo "Large data/model artifact files should not be committed."
+            exit 1
+          fi
+
+      - name: Check oversized files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          limit = 10 * 1024 * 1024
+          ignored_dirs = {".git", ".venv", "venv", "__pycache__"}
+          bad_files = []
+
+          for path in Path(".").rglob("*"):
+              if not path.is_file():
+                  continue
+              if any(part in ignored_dirs for part in path.parts):
+                  continue
+              if path.stat().st_size > limit:
+                  bad_files.append((str(path), path.stat().st_size))
+
+          if bad_files:
+              for name, size in bad_files:
+                  print(f"{name}: {size} bytes")
+              raise SystemExit("Found files larger than 10MB. Keep datasets/artifacts out of Git.")
+          PY
