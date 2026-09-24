@@ -76,4 +76,5 @@ streamlit run streamlit_app.py
 
 ## License
 
-Add a license before using this project commercially.
+Licensed under the MIT License. See `LICENSE`.
+
