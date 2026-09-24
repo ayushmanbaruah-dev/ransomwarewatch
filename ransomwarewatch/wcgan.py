@@ -1,16 +1,9 @@
-import torch
+﻿import torch
 import matplotlib.pyplot as plt
 import torch.nn as nn
 from torch.autograd import grad
 import streamlit as st
 import torch.optim as optim
-
-class WCGAN_GP:
-    def __init__(self, input_dim, device='cuda' if torch.cuda.is_available() else 'cpu'):
-        self.G = Generator(input_dim).to(device)
-        self.D = Discriminator(input_dim).to(device)
-        self.device = device
-        self.lambda_gp = 10
 
 class Generator(nn.Module):
     def __init__(self, input_dim):
@@ -117,3 +110,4 @@ class WCGAN_GP:
             print(f"Epoch {epoch + 1}/{epochs} | G Loss: {gen_loss.item():.4f} | D Loss: {loss_D.item():.4f}")
 
         return self.G, self.D
+
