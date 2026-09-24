@@ -1,5 +1,6 @@
 ﻿# RansomwareWatch
 
+[![CI](https://github.com/ayushmanbaruah-dev/ransomwarewatch/actions/workflows/ci.yml/badge.svg)](https://github.com/ayushmanbaruah-dev/ransomwarewatch/actions/workflows/ci.yml)
 AI-based real-time ransomware detection system with a Streamlit UI.
 
 This project implements an end-to-end pipeline:
@@ -77,4 +78,5 @@ streamlit run streamlit_app.py
 ## License
 
 Licensed under the MIT License. See `LICENSE`.
+
 
